@@ -1,6 +1,6 @@
 ORG 0
 
-	sjmp	test_count_even_gt10	; przyklad testu wybranej procedury
+	sjmp	test_copy_iram_iram_inv	; przyklad testu wybranej procedury
 
 test_sum_iram:
 	mov	R0, #30h	; adres poczatkowy obszaru
@@ -45,7 +45,6 @@ test_count_even_gt10:
 ;---------------------------------------------------------------------
 	
 sum_iram:  ; DZIALA
-    CLR C
 	MOV R7, #0   
     MOV R6, #0   
 	
@@ -61,8 +60,7 @@ pentla1:
     MOV R7, A     
 	
 	; przesuniecie adresu 
-    INC R0
-	CLR C	
+    INC R0	
     DJNZ R2, pentla1
 
     ret
@@ -77,18 +75,18 @@ pentla1:
 ;          R2 - dlugosc kopiowanego obszaru
 ;---------------------------------------------------------------------
 copy_iram_iram_inv: ; DZIALA
+		MOV A,R2
+		MOV B,R0
+		ADD A,B
+		DEC A
+		MOV R0,A
 	pentla2:
-		MOV A, @R0      ; Wczytaj dane ze zródla do akumulatora
-		MOV @R1, A      ; Zapisz dane do celu
-		INC R0          ; Zwieksz wskaznik zródla
-		JMP odwrot
-		DJNZ R2, pentla2   ; Powtarzaj az do konca bloku
+		MOV A, @R0      ; Wczytuje dane ze zródla do akumulatora
+		MOV @R1, A      ; Zapisuje dane do celu
+		DEC R0  ; zmnijeszam wskaznik zródla
+		INC R1
+		DJNZ R2, pentla2   ; Powtarzam az do konca bloku
 
-	odwrot:
-		DEC R1          ; Zmiejsz wskaznik celu
-		MOV A, @R0      ; Wczytaj dane ze zródla do akumulatora
-		MOV @R1, A      ; Zapisz dane do celu
-		DJNZ R2, pentla2 ; Powtarzaj az do konca bloku
 
 	ret
 
@@ -102,11 +100,11 @@ copy_iram_iram_inv: ; DZIALA
 ;---------------------------------------------------------------------
 copy_xram_iram_z: ; DZIALA
 	pentla3:
-		MOVX A, @DPTR   ; Wczytaj dane ze zródla do akumulatora
-		INC DPTR        ; Zwieksz wskaznik zródla
+		MOVX A, @DPTR   ; Wczytuje dane ze zródla do akumulatora
+		INC DPTR        ; Zwiekszam wskaznik zródla
 		JZ pomin_krok         ; Jesli dane w akumulatorze sa zerowe, przejdz do Skip
-		MOV @R0, A      ; Zapisz dane do celu
-		INC R0          ; Zwieksz wskaznik celu
+		MOV @R0, A      ; Zapisuje dane do celu
+		INC R0          ; Zwiekszam wskaznik celu
 	pomin_krok:
 		DJNZ R2, pentla3   ; Powtarzaj az do konca bloku
 	ret
@@ -149,15 +147,15 @@ copy_xram_xram: ;DZIALA
 ;          R2 - dlugosc bloku danych
 ; Wyjscie: A  - liczba elementow spelniajacych warunek
 ;---------------------------------------------------------------------
-count_even_gt10:
+count_even_gt10: ;DZIALA
 	MOV R7, #0    
 	pentla5:
 		MOV A, @R0     
-		JB ACC.0, pomin2  ; Pomijaj liczby nieparzyste
+		JB ACC.0, pomin2  ; Pomija liczby nieparzyste
 		CJNE A, #10h, flaga_C ; Pomija liczby mniejsze lub równe 10
 		JMP pomin2
 	flaga_C:
-		CPL C
+		CPL C ;odwracam flage
 		JNC pomin2
 		CLR C
 		INC R0
