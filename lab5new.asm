@@ -26,7 +26,7 @@ ALARM           EQU     P1.7            ; sygnalizacja alarmu
 
 
 ;---------------------------------------------------------------------
-; Poczatek pamieci, maksymalnei 11bytów
+; Poczatek pamieci, maksymalnei 11bytÃ³w
 ;---------------------------------------------------------------------
 CSEG AT 0
         sjmp    start                   ; Skok na poczatek pamieci
