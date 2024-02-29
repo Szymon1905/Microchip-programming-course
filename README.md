@@ -1,2 +1,2 @@
-# PTM-laby-Antoni-Sterna
-repo zawiera gotowe labolatoria z PTM z Antonim Sterną odbywające się w tygodnie nieparzyste
+# basics of microchip programming course
+Instructor for the Course: Dr Antoni Sterna
